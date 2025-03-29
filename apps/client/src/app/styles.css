@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Sora:wght@100..800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --default-font-family: "Karla", sans-serif;
+  --default-font-feature-settings: "Karla", sans-serif;
+  --font-display: "Sora", sans-serif;
+  --font-heading: "Sora", sans-serif;
+  --font-body: "Karla", sans-serif;
+  --color-blackBerry: #1D1D1D;       /* Dark gray/black */
+  --color-offWhiteBerry: #FAFAFA;    /* Off-white */
+  --color-neutralGrayBerry: #6C6C6C; /* Middle gray */
+  --color-accentOrangeBerry: #FF5F1F;/* Bold orange */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+

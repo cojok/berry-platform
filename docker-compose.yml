@@ -1,0 +1,105 @@
+services:
+  postgres:
+    image: postgres:13-alpine3.18
+    env_file:
+      - './apps/api-nest/.env'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - berry-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    env_file:
+      - './apps/api-nest/.env'
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    networks:
+      - berry-network
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    env_file:
+      - './apps/api-nest/.env'
+    command: redis-server --requirepass yourStrongPassword
+    networks:
+      - berry-network
+
+#  prometheus:
+#    image: prom/prometheus:latest
+#    container_name: prometheus
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - ./monitor/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+#    restart: unless-stopped
+#    networks:
+#      - berry-network
+#
+#  postgres-exporter:
+#    image: bitnami/postgres-exporter:latest
+#    container_name: postgres-exporter
+#    environment:
+#      DATA_SOURCE_NAME: postgres://<user>:<password>@postgres:5432/<dbname>?sslmode=disable
+#    depends_on:
+#      - postgres
+#    ports:
+#      - "9187:9187" # Default port for the PostgreSQL exporter
+#    networks:
+#      - berry-network
+#
+#  grafana:
+#    image: grafana/grafana:latest
+#    container_name: grafana
+#    ports:
+#      - "3101:3000" # Grafana UI port
+#    environment:
+#      - GF_SECURITY_ADMIN_USER=admin # Default username
+#      - GF_SECURITY_ADMIN_PASSWORD=admin # Default password
+##      - GF_SERVER_ROOT_URL= http://<your-external-domain>:3100
+#    volumes:
+#      - grafana_data:/var/lib/grafana # Persistent storage for Grafana data
+#    networks:
+#      - berry-network
+#    restart: unless-stopped
+#
+#  loki:
+#    image: grafana/loki:latest
+#    container_name: loki
+#    ports:
+#      - "3102:3100" # Loki API port
+#    volumes:
+#      - ./monitor/loki-config.yml:/etc/loki/loki-config.yml:ro
+#      - loki_data:/loki # Persistent data storage
+#    networks:
+#      - berry-network
+#    restart: unless-stopped
+#
+#  promtail:
+#    image: grafana/promtail:latest
+#    container_name: promtail
+##    command: ["/usr/bin/promtail", "-config.file=/etc/promtail/promtail-config.yml", "-config.expand-env=true"]
+#    volumes:
+#      - /var/log:/var/log
+#      - ./logs:/var/log
+#      - ./monitor/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+#    networks:
+#      - berry-network
+#    restart: unless-stopped
+volumes:
+  postgres_data:
+#  grafana_data:
+#  loki_data:
+
+networks:
+  berry-network:

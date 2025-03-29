@@ -1,14 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "files": [],
-  "include": [],
+  "include": ["src/**/*.ts"],  // ✅ Ensure all src files are included
   "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.spec.json" }
   ],
   "compilerOptions": {
     "esModuleInterop": true
