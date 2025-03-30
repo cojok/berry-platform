@@ -15,6 +15,7 @@ import { UsersModule } from '../users/users.module';
 import { CompanyModule } from '../company/company.module';
 import { StockItemModule } from '../stock-item/stock-item.module';
 import { WarehouseModule } from '../warehouse/warehouse.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { WarehouseModule } from '../warehouse/warehouse.module';
     CompanyModule,
     StockItemModule,
     WarehouseModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuthService, JwtStrategy, JwtAuthGuard],

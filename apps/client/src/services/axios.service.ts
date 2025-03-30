@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-const accessToken: string | null = localStorage.getItem('access_token');
+const accessToken: string | null = localStorage.getItem('accessToken');
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 1000,

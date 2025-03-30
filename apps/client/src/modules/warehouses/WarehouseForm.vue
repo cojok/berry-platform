@@ -1,89 +1,105 @@
 <template>
-  <div
-    class="fixed inset-0 flex items-center justify-center bg-blackBerry/80 backdrop-blur-md"
-  >
-    <div
-      class="bg-blackBerry/60 border border-neutralGrayBerry/40 p-6 rounded-xl shadow-lg w-96"
-    >
-      <h2 class="text-xl font-heading font-semibold text-offWhiteBerry/90 mb-4">
-        {{ mode === 'create' ? 'Create Warehouse' : 'Edit Warehouse' }}
-      </h2>
-
-      <Form
-        :validation-schema="schema"
-        @submit="onSubmit"
-        class="space-y-4"
-        v-slot="{ errors }"
-      >
-        <!-- Name -->
-        <Field
-          name="name"
-          class="w-full px-4 py-2 bg-neutralGrayBerry/50 text-offWhiteBerry rounded-lg focus:ring-2 focus:ring-accentOrangeBerry"
-          placeholder="Warehouse Name"
-        />
-        <ErrorMessage name="name" class="text-red-500 text-sm" />
-
-        <!-- Location -->
-        <Field
-          name="location"
-          class="w-full px-4 py-2 bg-neutralGrayBerry/50 text-offWhiteBerry rounded-lg focus:ring-2 focus:ring-accentOrangeBerry"
-          placeholder="Location"
-        />
-        <ErrorMessage name="location" class="text-red-500 text-sm" />
-
-        <!-- Capacity -->
-        <Field
-          name="capacity"
-          type="number"
-          class="w-full px-4 py-2 bg-neutralGrayBerry/50 text-offWhiteBerry rounded-lg focus:ring-2 focus:ring-accentOrangeBerry"
-          placeholder="Capacity"
-        />
-        <ErrorMessage name="capacity" class="text-red-500 text-sm" />
-
-        <div class="mt-4 flex justify-between">
-          <button
-            type="button"
-            @click="$emit('close')"
-            class="px-4 py-2 bg-neutralGrayBerry/60 text-offWhiteBerry rounded-lg hover:bg-neutralGrayBerry/50 transition"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-accentOrangeBerry text-offWhiteBerry font-semibold rounded-lg shadow-md hover:bg-orange-500 transition"
-          >
-            {{ mode === 'create' ? 'Create' : 'Update' }}
-          </button>
-        </div>
-      </Form>
+  <form @submit="handleSubmit(onSubmit)" novalidate>
+    <div>
+      <label for="name">Warehouse Name</label>
+      <input
+        v-model="formData.name"
+        type="text"
+        id="name"
+        name="name"
+        placeholder="Enter warehouse name"
+      />
+      <span v-if="errors.name">{{ errors.name.message }}</span>
     </div>
-  </div>
+
+    <div>
+      <label for="location">Location</label>
+      <input
+        v-model="formData.location"
+        type="text"
+        id="location"
+        name="location"
+        placeholder="Enter warehouse location"
+      />
+      <span v-if="errors.location">{{ errors.location.message }}</span>
+    </div>
+
+    <div>
+      <label for="capacity">Capacity</label>
+      <input
+        v-model="formData.capacity"
+        type="number"
+        id="capacity"
+        name="capacity"
+        placeholder="Enter warehouse capacity"
+      />
+      <span v-if="errors.capacity">{{ errors.capacity.message }}</span>
+    </div>
+
+    <div>
+      <label for="isActive">Active</label>
+      <input
+        v-model="formData.isActive"
+        type="checkbox"
+        id="isActive"
+        name="isActive"
+      />
+    </div>
+
+    <button type="submit">Submit</button>
+  </form>
 </template>
 
 <script setup lang="ts">
-import { ErrorMessage, Field, Form } from 'vee-validate';
-import * as yup from 'yup';
-import { IWarehouse } from '@berry/shared';
+import { ref } from 'vue';
+import { useWarehouseStore } from '../../stores/warehouse.store';
+import { useForm } from 'vee-validate';
+import {
+  createWarehouseSchema,
+  IWarehouse,
+  IWarehouseCreatePayload,
+  IWarehouseUpdatePayload,
+  updateWarehouseSchema,
+} from '@berry/shared';
 
-// Props and emits
-const props = defineProps<{
-  mode: 'create' | 'edit';
-  warehouse?: IWarehouse;
-}>();
-const emit = defineEmits<{
-  (e: 'submitted', value: IWarehouse): void;
-  (e: 'close'): void;
-}>();
+interface Props {
+  warehouse: IWarehouse | null;
+}
 
-// Schema
-const schema = yup.object({
-  name: yup.string().required('Name is required'),
-  location: yup.string().required('Location is required'),
-  capacity: yup.number().required('Capacity is required'),
+const props = withDefaults(defineProps<Props>(), {
+  warehouse: null,
 });
 
-// Submit handler
-const onSubmit = (values: Record<string, any>, { resetForm }: any): void => {
-  emit('submitted', values as IWarehouse);
+const store = useWarehouseStore();
+const isUpdate = props.warehouse !== null;
+const formData = ref<IWarehouseCreatePayload | IWarehouseUpdatePayload>(
+  isUpdate
+    ? { ...props.warehouse }
+    : { name: '', location: '', capacity: undefined, isActive: true }
+);
+
+const { handleSubmit, errors } = useForm({
+  validationSchema: isUpdate ? updateWarehouseSchema : createWarehouseSchema,
+  initialValues: formData.value,
+});
+
+const onSubmit = async () => {
+  try {
+    if (isUpdate && props.warehouse) {
+      await store.update(
+        props.warehouse.id,
+        formData.value as IWarehouseUpdatePayload
+      );
+    } else {
+      await store.create(formData.value as IWarehouseCreatePayload);
+    }
+    // Reset form or provide feedback here
+  } catch (error) {
+    console.error('Error submitting form:', error);
+  }
 };
 </script>
+
+<style scoped>
+/* Add your styles here */
+</style>

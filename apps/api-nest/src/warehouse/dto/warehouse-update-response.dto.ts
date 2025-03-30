@@ -1,8 +1,5 @@
-import { warehouseCreateResponseSchema } from './warehouse-create-response.dto';
+import { warehouseUpdateResponseSchema } from '@berry/shared';
 import { z } from 'zod';
-
-export const warehouseUpdateResponseSchema =
-  warehouseCreateResponseSchema.partial();
 
 export type WarehouseUpdateResponseDto = z.infer<
   typeof warehouseUpdateResponseSchema

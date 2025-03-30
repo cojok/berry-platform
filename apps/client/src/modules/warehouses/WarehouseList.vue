@@ -1,41 +1,65 @@
 <template>
-  <div class="overflow-x-auto">
+  <div class="p-6">
     <table
-      class="w-full border-collapse border border-neutralGrayBerry/50 mt-4 rounded-lg overflow-hidden"
+      class="min-w-full table-auto bg-neutralGrayBerry/20 rounded-lg overflow-hidden text-offWhiteBerry text-sm font-body"
     >
-      <thead>
-        <tr class="bg-neutralGrayBerry/40 text-offWhiteBerry/90 text-left">
-          <th class="p-3 font-heading">Name</th>
-          <th class="p-3 font-heading">Location</th>
-          <th class="p-3 font-heading">Capacity</th>
-          <th class="p-3 font-heading">Actions</th>
+      <thead
+        class="bg-neutralGrayBerry/30 text-left uppercase tracking-wider text-xs font-semibold"
+      >
+        <tr>
+          <th class="px-4 py-3">Name</th>
+          <th class="px-4 py-3">Description</th>
+          <th class="px-4 py-3">Address</th>
+          <th class="px-4 py-3">Capacity</th>
+          <th class="px-4 py-3">Status</th>
+          <th class="px-4 py-3">Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="warehouse in warehouses"
           :key="warehouse.id"
-          class="border-t border-neutralGrayBerry/50 even:bg-blackBerry/50"
+          class="border-t border-neutralGrayBerry/30 even:bg-neutralGrayBerry/10 hover:bg-neutralGrayBerry/40 transition"
         >
-          <td class="p-3 text-offWhiteBerry/90">{{ warehouse.name }}</td>
-          <td class="p-3 text-neutralGrayBerry/80">{{ warehouse.location }}</td>
-          <td class="p-3">{{ warehouse.capacity }}</td>
-          <td class="p-3 flex space-x-2">
-            <button
-              @click="$emit('view', warehouse)"
-              class="px-3 py-1 bg-accentOrangeBerry text-offWhiteBerry rounded-md hover:bg-orange-500 transition"
+          <!-- Name -->
+          <td class="px-4 py-3">{{ warehouse.name }}</td>
+
+          <!-- Description -->
+          <td class="px-4 py-3">{{ warehouse.description || 'N/A' }}</td>
+
+          <!-- Address -->
+          <td class="px-4 py-3">
+            {{ warehouse.address || 'N/A' }}, {{ warehouse.city || 'N/A' }},
+            {{ warehouse.state || 'N/A' }}, {{ warehouse.zipCode || 'N/A' }},
+            {{ warehouse.country || 'N/A' }}
+          </td>
+
+          <!-- Capacity -->
+          <td class="px-4 py-3">{{ warehouse.capacity || 'N/A' }}</td>
+
+          <!-- Status -->
+          <td class="px-4 py-3">
+            <span
+              :class="{
+                'text-successBerry font-medium': warehouse.status === 'active',
+                'text-dangerBerry font-medium': warehouse.status === 'inactive',
+              }"
             >
-              View
-            </button>
+              {{ warehouse.status }}
+            </span>
+          </td>
+
+          <!-- Actions -->
+          <td class="px-4 py-3 flex space-x-2">
             <button
               @click="$emit('edit', warehouse)"
-              class="px-3 py-1 bg-neutralGrayBerry/70 text-white rounded-md hover:bg-neutralGrayBerry/50 transition"
+              class="px-3 py-1.5 bg-accentOrangeBerry text-offWhiteBerry text-xs font-medium rounded-md hover:bg-orange-500 transition focus:outline-none focus:ring-2 focus:ring-accentOrangeBerry"
             >
               Edit
             </button>
             <button
               @click="$emit('delete', warehouse.id)"
-              class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+              class="px-3 py-1.5 bg-dangerBerry text-offWhiteBerry text-xs font-medium rounded-md hover:bg-red-400 transition focus:outline-none focus:ring-2 focus:ring-dangerBerry"
             >
               Delete
             </button>
@@ -47,8 +71,11 @@
 </template>
 
 <script setup lang="ts">
-import { Warehouse } from '@/libs/shared/src/interfaces/warehouse.interfaces';
+import { defineProps } from 'vue';
+import { IWarehouse } from '@berry/shared';
 
-defineProps<{ warehouses: Warehouse[] }>();
-defineEmits(['view', 'edit', 'delete']);
+// Props for the warehouse list
+const props = defineProps<{
+  warehouses: IWarehouse[];
+}>();
 </script>

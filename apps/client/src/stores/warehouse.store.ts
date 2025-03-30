@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia';
 import instance from '../services/axios.service';
-import { IWarehouse } from '@berry/shared';
+import {
+  createWarehouseSchema,
+  IWarehouse,
+  IWarehouseCreatePayload,
+  IWarehouseUpdatePayload,
+  updateWarehouseSchema,
+} from '@berry/shared';
 
 export const useWarehouseStore = defineStore('warehouses', {
   state: (): { warehouses: IWarehouse[]; loading: boolean } => ({
@@ -8,6 +14,7 @@ export const useWarehouseStore = defineStore('warehouses', {
     loading: false,
   }),
   actions: {
+    // Fetch all warehouses
     async fetchAll(): Promise<void> {
       this.loading = true;
       try {
@@ -17,21 +24,41 @@ export const useWarehouseStore = defineStore('warehouses', {
         this.loading = false;
       }
     },
-    async create(payload: IWarehouse): Promise<void> {
-      const response = await instance.post<IWarehouse>(
-        'v1/warehouses',
-        payload
-      );
-      this.warehouses.push(response.data);
+
+    // Create a new warehouse
+    async create(payload: IWarehouseCreatePayload): Promise<void> {
+      try {
+        // Validate the payload using Zod
+        const validatedPayload = createWarehouseSchema.parse(payload);
+
+        const response = await instance.post<IWarehouse>(
+          'v1/warehouses',
+          validatedPayload
+        );
+        this.warehouses.push(response.data);
+      } catch (error) {
+        console.error('Error creating warehouse:', error);
+      }
     },
-    async update(id: string, payload: Partial<IWarehouse>): Promise<void> {
-      const response = await instance.patch<IWarehouse>(
-        `v1/warehouses/${id}`,
-        payload
-      );
-      const index = this.warehouses.findIndex((w) => w.id === id);
-      if (index !== -1) this.warehouses[index] = response.data;
+
+    // Update an existing warehouse
+    async update(id: string, payload: IWarehouseUpdatePayload): Promise<void> {
+      try {
+        // Validate the payload using Zod
+        const validatedPayload = updateWarehouseSchema.parse(payload);
+
+        const response = await instance.patch<IWarehouse>(
+          `v1/warehouses/${id}`,
+          validatedPayload
+        );
+        const index = this.warehouses.findIndex((w) => w.id === id);
+        if (index !== -1) this.warehouses[index] = response.data;
+      } catch (error) {
+        console.error('Error updating warehouse:', error);
+      }
     },
+
+    // Delete a warehouse
     async delete(id: string): Promise<void> {
       await instance.delete<void>(`v1/warehouses/${id}`);
       this.warehouses = this.warehouses.filter((w) => w.id !== id);

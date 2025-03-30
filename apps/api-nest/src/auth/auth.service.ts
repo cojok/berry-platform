@@ -42,7 +42,7 @@ export class AuthService {
   private readonly auth0RevokeUrl: string;
   private readonly auth0ForgotPasswordUrl: string;
   private readonly auth0ConnectionType: string;
-  private readonly auth0DefautlPassword: string;
+  private readonly auth0DefaultPassword: string;
 
   constructor(
     private readonly configService: ConfigService,
@@ -76,14 +76,14 @@ export class AuthService {
     this.auth0ForgotPasswordUrl = this.configService.getEnv(
       'AUTH0_PASSWORD_RESET_URL'
     );
-    this.auth0DefautlPassword = this.configService.getEnv<string>(
+    this.auth0DefaultPassword = this.configService.getEnv<string>(
       'AUTH0_DEFAULT_PASSWORD'
     );
   }
 
   public async login(email: string, password: string): Promise<LoginResponse> {
     try {
-      if (password === this.auth0DefautlPassword) {
+      if (password === this.auth0DefaultPassword) {
         throw new ForbiddenException(
           'Change initial password in order to login.'
         );

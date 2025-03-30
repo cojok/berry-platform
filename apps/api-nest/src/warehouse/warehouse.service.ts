@@ -10,20 +10,34 @@ import {
   WarehouseUpdateResponseDto,
   warehouseUpdateResponseSchema,
 } from './dto';
+import { CompanyService } from '../company/company.service';
 
 @Injectable()
 export class WarehouseService {
   constructor(
     @InjectRepository(WarehouseEntity)
-    private warehouseRepository: Repository<WarehouseEntity>
+    private readonly warehouseRepository: Repository<WarehouseEntity>,
+    private readonly companyService: CompanyService
   ) {}
 
   async create(
     payload: CreateWarehouseDto,
     tenantId: string
   ): Promise<WarehouseCreateResponseDto> {
+    const companyId = await this.companyService.findOneByTenantId(tenantId);
+    if (companyId === null || companyId === undefined) {
+      throw new NotFoundException(
+        `Company with tenant ID ${tenantId} not found`
+      );
+    }
+    console.log({
+      ...payload,
+      companyId: companyId.id,
+      tenantId,
+    });
     const warehouse = this.warehouseRepository.create({
       ...payload,
+      companyId: companyId.id,
       tenantId,
     });
 
