@@ -87,4 +87,11 @@ export class CompanyService {
     company.isDeleted = true;
     await this.companyRepository.save(company);
   }
+
+  async findOneByTenantId(tenantId: string): Promise<{ id: string } | null> {
+    return await this.companyRepository.findOne({
+      where: { tenantId, isDeleted: false },
+      select: ['id'],
+    });
+  }
 }

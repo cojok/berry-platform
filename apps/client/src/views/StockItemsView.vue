@@ -3,7 +3,7 @@
     class="max-w-6xl mx-auto p-6 bg-blackBerry/60 border border-neutralGrayBerry/40 backdrop-blur-md rounded-xl shadow-xl shadow-blackBerry/40 min-h-[70vh]"
   >
     <h1 class="text-2xl font-heading font-semibold text-offWhiteBerry/90 mb-4">
-      Warehouses
+      Stock Items
     </h1>
 
     <!-- Search & Filters -->

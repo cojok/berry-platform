@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { WarehouseEntity } from './entities/warehouse.entity';
@@ -6,24 +10,37 @@ import {
   CreateWarehouseDto,
   UpdateWarehouseDto,
   WarehouseCreateResponseDto,
-  warehouseCreateResponseSchema,
   WarehouseUpdateResponseDto,
-  warehouseUpdateResponseSchema,
 } from './dto';
+import { CompanyService } from '../company/company.service';
+import {
+  warehouseCreateResponseMapperSchema,
+  warehouseCreateResponseSchema,
+  warehouseUpdateResponseSchema,
+} from '@berry/shared';
 
 @Injectable()
 export class WarehouseService {
   constructor(
     @InjectRepository(WarehouseEntity)
-    private warehouseRepository: Repository<WarehouseEntity>
+    private readonly warehouseRepository: Repository<WarehouseEntity>,
+    private readonly companyService: CompanyService
   ) {}
 
   async create(
     payload: CreateWarehouseDto,
     tenantId: string
   ): Promise<WarehouseCreateResponseDto> {
+    const companyId = await this.companyService.findOneByTenantId(tenantId);
+    if (companyId === null || companyId === undefined) {
+      throw new NotFoundException(
+        `Company with tenant ID ${tenantId} not found`
+      );
+    }
+
     const warehouse = this.warehouseRepository.create({
       ...payload,
+      companyId: companyId.id,
       tenantId,
     });
 
@@ -36,9 +53,15 @@ export class WarehouseService {
       where: { tenantId },
     });
 
-    return warehouses.map((warehouse) =>
-      warehouseCreateResponseSchema.parse(warehouse)
-    );
+    return warehouses.map((warehouse) => {
+      const parsedData =
+        warehouseCreateResponseMapperSchema.safeParse(warehouse);
+      if (parsedData.success) {
+        return warehouseCreateResponseSchema.parse(parsedData.data);
+      } else {
+        throw new BadRequestException(parsedData.error);
+      }
+    });
   }
 
   async findOne(

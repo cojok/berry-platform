@@ -1,8 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { dashboardRoutes } from '../modules/dashboard/dasboard.route';
 import AppLayout from '../components/layouts/AppLayout.vue';
-import { AuthRoutes, ProfileRoutes, UsersRoutes } from '../router';
-import { warehouseRoutes } from '../router/warehouse.route';
+import {
+  AuthRoutes,
+  ProfileRoutes,
+  StockItemsRoutes,
+  UsersRoutes,
+  WarehouseRoutes,
+} from '../router';
 import { useAuthStore } from '../stores/auth.store';
 
 const router = createRouter({
@@ -17,7 +22,8 @@ const router = createRouter({
         ...dashboardRoutes,
         ...ProfileRoutes,
         ...UsersRoutes,
-        ...warehouseRoutes,
+        ...WarehouseRoutes,
+        ...StockItemsRoutes,
         {
           path: '/:catchAll(.*)',
           component: () => import('../views/NotFoundView.vue'),
