@@ -6,11 +6,13 @@ import {
   CreateWarehouseDto,
   UpdateWarehouseDto,
   WarehouseCreateResponseDto,
-  warehouseCreateResponseSchema,
   WarehouseUpdateResponseDto,
-  warehouseUpdateResponseSchema,
 } from './dto';
 import { CompanyService } from '../company/company.service';
+import {
+  warehouseCreateResponseSchema,
+  warehouseUpdateResponseSchema,
+} from '@berry/shared';
 
 @Injectable()
 export class WarehouseService {
@@ -30,11 +32,7 @@ export class WarehouseService {
         `Company with tenant ID ${tenantId} not found`
       );
     }
-    console.log({
-      ...payload,
-      companyId: companyId.id,
-      tenantId,
-    });
+
     const warehouse = this.warehouseRepository.create({
       ...payload,
       companyId: companyId.id,

@@ -13,9 +13,7 @@ import {
 import { WarehouseService } from './warehouse.service';
 import {
   CreateWarehouseDto,
-  createWarehouseSchema,
   UpdateWarehouseDto,
-  updateWarehouseSchema,
   WarehouseCreateResponseDto,
   WarehouseUpdateResponseDto,
 } from './dto/';
@@ -23,6 +21,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { CurrentUserDecorator } from '../common/decorators/current-user.decorator';
 import { TokenPayloadDto } from '../auth/dto';
+import { createWarehouseSchema, updateWarehouseSchema } from '@berry/shared';
 
 @UseGuards(JwtAuthGuard)
 @Controller('warehouses')
