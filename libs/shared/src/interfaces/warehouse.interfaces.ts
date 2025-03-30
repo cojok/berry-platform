@@ -11,16 +11,18 @@ export interface IWarehouseData {
   capacity?: number;
   createdAt: Date;
   updatedAt: Date;
-  deletedAt?: Date;
+  deletedAt?: Date | null;
   stockItems?: IStockItem[];
 }
 
 export type IWarehouse = IWarehouseData;
 
 // Client payload for creation (FE ➜ BE)
-export type IWarehouseCreatePayload = Omit<
-  IWarehouseData,
-  'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'stockItems' | 'isDeleted'
+export type IWarehouseCreatePayload = Partial<
+  Omit<
+    IWarehouseData,
+    'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'stockItems' | 'isDeleted'
+  >
 >;
 
 // Response to client after creation

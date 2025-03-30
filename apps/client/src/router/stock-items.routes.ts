@@ -1,9 +1,9 @@
 import { RouteRecordRaw } from 'vue-router';
 
-export const WarehouseRoutes: RouteRecordRaw[] = [
+export const StockItemsRoutes: RouteRecordRaw[] = [
   {
-    path: '/warehouse',
-    name: 'Warehouses',
+    path: '/stock',
+    name: 'StockItems',
     component: () => import('../views/WarehousesView.vue'),
     meta: { requiresAuth: true },
   },

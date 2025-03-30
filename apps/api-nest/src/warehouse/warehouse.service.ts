@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { WarehouseEntity } from './entities/warehouse.entity';
@@ -10,6 +14,7 @@ import {
 } from './dto';
 import { CompanyService } from '../company/company.service';
 import {
+  warehouseCreateResponseMapperSchema,
   warehouseCreateResponseSchema,
   warehouseUpdateResponseSchema,
 } from '@berry/shared';
@@ -48,9 +53,15 @@ export class WarehouseService {
       where: { tenantId },
     });
 
-    return warehouses.map((warehouse) =>
-      warehouseCreateResponseSchema.parse(warehouse)
-    );
+    return warehouses.map((warehouse) => {
+      const parsedData =
+        warehouseCreateResponseMapperSchema.safeParse(warehouse);
+      if (parsedData.success) {
+        return warehouseCreateResponseSchema.parse(parsedData.data);
+      } else {
+        throw new BadRequestException(parsedData.error);
+      }
+    });
   }
 
   async findOne(
