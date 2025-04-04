@@ -26,6 +26,7 @@ export class StockItemEntity {
   id!: string;
 
   @Column({
+    name: 'tenant_id',
     type: 'uuid',
     nullable: false,
     comment: 'Foreign key to the tenant table',
@@ -38,12 +39,13 @@ export class StockItemEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({
-    name: 'tenantId',
+    name: 'tenant_id',
     foreignKeyConstraintName: 'fk_stockitem_tenant',
   })
   tenant!: TenantEntity;
 
   @Column({
+    name: 'company_id',
     type: 'uuid',
     nullable: false,
     comment: 'Foreign key to the company table',
@@ -56,7 +58,7 @@ export class StockItemEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({
-    name: 'companyId',
+    name: 'company_id',
     foreignKeyConstraintName: 'fk_stockitem_company',
   })
   company!: CompanyEntity;
@@ -90,10 +92,11 @@ export class StockItemEntity {
   quantity!: number;
 
   @Column({
+    name: 'minimum_quantity',
     type: 'int',
     nullable: false,
   })
-  minimum_quantity!: number;
+  minimumQuantity!: number;
 
   @Column({
     type: 'boolean',

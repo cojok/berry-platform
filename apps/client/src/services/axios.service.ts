@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
 const accessToken: string | null = localStorage.getItem('accessToken');
-const instance: AxiosInstance = axios.create({
+export const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 1000,
   headers: {
@@ -10,4 +10,10 @@ const instance: AxiosInstance = axios.create({
   },
 });
 
-export default instance;
+export const checkAuthErrorRemoveToken = (error: unknown): void => {
+  if (!axios.isAxiosError(error)) return;
+
+  if (error.response?.status === 401) {
+    localStorage.removeItem('accessToken');
+  }
+};

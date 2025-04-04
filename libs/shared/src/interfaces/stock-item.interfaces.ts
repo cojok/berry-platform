@@ -6,7 +6,7 @@ export interface IStockItem {
   description: string;
   sku: string;
   quantity: number;
-  minimum_quantity: number;
+  minimumQuantity: number;
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;

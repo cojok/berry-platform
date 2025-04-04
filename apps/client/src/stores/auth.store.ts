@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import instance from '../services/axios.service';
+import { instance } from '../services/axios.service';
 import { Roles } from '@berry/shared';
 
 // ✅ Strict TypeScript Interface for User
@@ -126,6 +126,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     if (!user.value || !user.value.id || user.value.id.trim() === '') {
       console.warn('[AuthStore] Cannot refresh token - User ID is missing.');
+      await logout();
       return;
     }
 

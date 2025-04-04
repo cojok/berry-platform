@@ -50,8 +50,7 @@ export class CompanyService {
 
     const newCompany = await this.companyRepository.save(company);
 
-    await this.userService.addCompanyIdToUser(userId, newCompany.id);
-
+    await this.userService.addCompanyIdToUser(userId, tenantId, newCompany.id);
     return companyResponseSchema.parse(newCompany);
   }
 

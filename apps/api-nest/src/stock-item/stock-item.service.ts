@@ -26,6 +26,8 @@ export class StockItemService {
       ...payload,
       tenantId,
     });
+    console.log(payload);
+    console.log(stockItem);
 
     const newStockItem = await this.stockItemRepository.save(stockItem);
     return stockItemResponseSchema.parse(newStockItem);

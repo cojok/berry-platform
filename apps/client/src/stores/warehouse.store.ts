@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import instance from '../services/axios.service';
+import { instance } from '../services/axios.service';
 import {
   createWarehouseSchema,
   IWarehouse,
@@ -7,6 +7,8 @@ import {
   IWarehouseUpdatePayload,
   updateWarehouseSchema,
 } from '@berry/shared';
+import { isAxiosError } from 'axios';
+import router from '../app/index.route';
 
 export const useWarehouseStore = defineStore('warehouses', {
   state: (): { warehouses: IWarehouse[]; loading: boolean } => ({
@@ -20,6 +22,15 @@ export const useWarehouseStore = defineStore('warehouses', {
       try {
         const response = await instance.get<IWarehouse[]>('v1/warehouses');
         this.warehouses = response.data;
+      } catch (error: unknown) {
+        if (isAxiosError(error)) {
+          if (error.response?.data.statusCode === 401) {
+            console.log(error.response?.data);
+            localStorage.removeItem('accessToken');
+            await router.push('/login');
+          }
+        }
+        throw error;
       } finally {
         this.loading = false;
       }

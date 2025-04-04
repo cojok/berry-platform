@@ -8,7 +8,7 @@ export const createStockItemSchema = z
     description: z.string(),
     sku: z.string(),
     quantity: z.number().int().min(0),
-    minimum_quantity: z.number().int().min(0),
+    minimumQuantity: z.number().int().min(0),
   })
   .strict();
 

@@ -18,13 +18,11 @@ export class ZodExceptionFilter implements ExceptionFilter {
     const exceptionResponse = exception.getResponse();
 
     let errors: { path: string; message: string }[] = [];
-
     if (
       typeof exceptionResponse === 'object' &&
       'errors' in exceptionResponse
     ) {
       const errorDetails = exceptionResponse.errors;
-
       if (errorDetails instanceof ZodError) {
         errors = Object.entries(errorDetails.format()).map(([key, value]) => ({
           path: key,
@@ -36,7 +34,6 @@ export class ZodExceptionFilter implements ExceptionFilter {
         errors = errorDetails;
       }
     }
-
     response.status(status).send({
       statusCode: status,
       message: 'Validation failed',
