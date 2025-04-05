@@ -8,7 +8,7 @@ export const stockItemResponseSchema = z.object({
   description: z.string(),
   sku: z.string(),
   quantity: z.number(),
-  minimum_quantity: z.number(),
+  minimum_quantity: z.number().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
   isDeleted: z.boolean(),

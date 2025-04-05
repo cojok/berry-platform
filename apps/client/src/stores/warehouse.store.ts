@@ -19,18 +19,17 @@ export const useWarehouseStore = defineStore('warehouses', {
     // Fetch all warehouses
     async fetchAll(): Promise<void> {
       this.loading = true;
+      // if (this.warehouses.length) return;
       try {
         const response = await instance.get<IWarehouse[]>('v1/warehouses');
         this.warehouses = response.data;
       } catch (error: unknown) {
         if (isAxiosError(error)) {
           if (error.response?.data.statusCode === 401) {
-            console.log(error.response?.data);
             localStorage.removeItem('accessToken');
             await router.push('/login');
           }
         }
-        throw error;
       } finally {
         this.loading = false;
       }
@@ -48,7 +47,7 @@ export const useWarehouseStore = defineStore('warehouses', {
         );
         this.warehouses.push(response.data);
       } catch (error) {
-        console.error('Error creating warehouse:', error);
+        throw new Error(`Error creating warehouse: ${error}`);
       }
     },
 
@@ -65,7 +64,7 @@ export const useWarehouseStore = defineStore('warehouses', {
         const index = this.warehouses.findIndex((w) => w.id === id);
         if (index !== -1) this.warehouses[index] = response.data;
       } catch (error) {
-        console.error('Error updating warehouse:', error);
+        throw new Error(`Error updating warehouse: ${error}`);
       }
     },
 

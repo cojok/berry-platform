@@ -103,7 +103,6 @@ export class StockItemEntity {
     default: false,
     nullable: false,
   })
-  @Index('idx_stockitem_deleted')
   isDeleted!: boolean;
 
   @CreateDateColumn({

@@ -9,11 +9,3 @@ export const instance: AxiosInstance = axios.create({
     ...(accessToken !== null && { Authorization: `Bearer ${accessToken}` }),
   },
 });
-
-export const checkAuthErrorRemoveToken = (error: unknown): void => {
-  if (!axios.isAxiosError(error)) return;
-
-  if (error.response?.status === 401) {
-    localStorage.removeItem('accessToken');
-  }
-};

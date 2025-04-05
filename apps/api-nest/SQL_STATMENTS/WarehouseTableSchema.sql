@@ -23,3 +23,8 @@ CREATE INDEX idx_warehouse_tenant_id ON public.warehouse (tenant_id);
 CREATE INDEX idx_warehouse_company_id ON public.warehouse (company_id);
 CREATE INDEX idx_warehouse_name ON public.warehouse (name);
 CREATE INDEX idx_warehouse_deleted ON public.warehouse (is_deleted);
+
+
+-- Alter table to add 'deleted_at' column with NULLABLE values
+ALTER TABLE public.warehouse
+  ADD COLUMN deleted_at TIMESTAMPTZ DEFAULT NULL;

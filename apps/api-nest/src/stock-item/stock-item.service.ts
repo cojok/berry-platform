@@ -26,21 +26,14 @@ export class StockItemService {
       ...payload,
       tenantId,
     });
-    console.log(payload);
-    console.log(stockItem);
-
     const newStockItem = await this.stockItemRepository.save(stockItem);
     return stockItemResponseSchema.parse(newStockItem);
   }
 
   async findAll(tenantId: string): Promise<StockItemResponseDto[]> {
-    const stockItems = await this.stockItemRepository.find({
+    return await this.stockItemRepository.find({
       where: { tenantId, isDeleted: false },
     });
-
-    return stockItems.map((stockItem) =>
-      stockItemResponseSchema.parse(stockItem)
-    );
   }
 
   async findOne(id: string, tenantId: string): Promise<StockItemResponseDto> {
