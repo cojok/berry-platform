@@ -7,11 +7,11 @@
     </h1>
 
     <!-- Search & Filters -->
-    <WarehouseFilters @search="handleSearch" @filter="handleFilter" />
+    <StockItemFilters @search="handleSearch" @filter="handleFilter" />
 
     <!-- Warehouse List -->
-    <WarehouseList
-      :warehouses="filteredWarehouses"
+    <StockItemList
+      :stockItems="stockItems"
       @view="viewWarehouse"
       @edit="editWarehouse"
       @delete="deleteWarehouse"
@@ -24,66 +24,123 @@
         class="flex justify-around gap-2 px-4 py-2 bg-accentOrangeBerry text-white font-semibold rounded-lg shadow-md hover:bg-orange-500 transition-all cursor-pointer"
       >
         <PlusIcon class="w-6 h-6 text-offWhiteBerry/80 inline" />
-        Add Warehouse
+        Add Stock Item
       </button>
     </div>
 
     <!-- Warehouse Form Modal -->
-    <WarehouseForm
+    <StockItemForm
       v-if="showForm"
       :mode="formMode"
-      :warehouse="selectedWarehouse"
+      :stockItem="selectedStockItem"
       @submitted="handleFormSubmit"
       @close="showForm = false"
     />
 
     <!-- Warehouse Detail Modal -->
-    <WarehouseDetail
-      v-if="showDetail"
-      :warehouse="selectedWarehouse"
+    <StockItemDetail
+      v-if="showDetail && selectedStockItem"
+      :stockItem="selectedStockItem"
       @close="showDetail = false"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { PlusIcon } from '@heroicons/vue/24/solid';
-import { useWarehouseStore } from '../stores/warehouse.store';
 
-import WarehouseList from '../modules/warehouses/WarehouseList.vue';
-import WarehouseForm from '../modules/warehouses/WarehouseForm.vue';
-import WarehouseDetail from '../modules/warehouses/WarehouseDetail.vue';
-import { IWarehouse } from '@berry/shared';
-import WarehouseFilters from '../modules/warehouses/WarehouseFilters.vue';
+import StockItemList from '../modules/stock-items/StockItemList.vue';
+import StockItemForm from '../modules/stock-items/StockItemForm.vue';
+import StockItemDetail from '../modules/stock-items/StockItemDetail.vue';
+import { IStockItem } from '@berry/shared';
+import StockItemFilters from '../modules/stock-items/StockItemFilters.vue';
+import { useStockItemStore } from '../stores/stock-item.store';
 
-const store = useWarehouseStore();
-const warehouses = ref<IWarehouse[]>([]);
+const store = useStockItemStore();
+const stockItems = ref<IStockItem[]>([]);
 const showForm = ref<boolean>(false);
 const showDetail = ref<boolean>(false);
-const selectedWarehouse = ref<IWarehouse | undefined>();
+const selectedStockItem = ref<IStockItem | undefined>();
 const formMode = ref<'create' | 'edit'>('create');
-const mockWarehouses = [
+const mockStockItems = [
   {
-    id: '1',
-    name: 'Main Warehouse',
-    location: 'New York',
-    capacity: 1000,
-    isActive: true,
+    id: '4836a375-f438-450e-8c04-f4b282d34af6',
+    tenantId: '7b639e1c-dad4-4ff9-99d5-257ddef84fb3',
+    companyId: 'ef77638c-f01f-496a-bbe9-aef9115c76de',
+    name: 'ahaha',
+    description: 'this is the description',
+    sku: '1743852763',
+    quantity: 123,
+    minimumQuantity: 1234567,
+    isDeleted: false,
+    createdAt: '2025-04-05T11:32:43.214Z',
+    updatedAt: '2025-04-05T11:32:43.214Z',
   },
   {
-    id: '2',
-    name: 'Secondary Warehouse',
-    location: 'Los Angeles',
-    capacity: 500,
-    isActive: true,
+    id: '5736b375-a438-450e-8c04-f4b282d35bc7',
+    tenantId: '7b639e1c-dad4-4ff9-99d5-257ddef84fb3',
+    companyId: 'ef77638c-f01f-496a-bbe9-aef9115c76de',
+    name: 'item1',
+    description: 'first additional item',
+    sku: '1743852764',
+    quantity: 50,
+    minimumQuantity: 500,
+    isDeleted: false,
+    createdAt: '2025-05-10T11:32:43.214Z',
+    updatedAt: '2025-05-10T11:32:43.214Z',
   },
   {
-    id: '3',
-    name: 'Tertiary Warehouse',
-    location: 'Chicago',
-    capacity: 200,
-    isActive: false,
+    id: '6736c375-b539-460e-8d04-f5b382d46cd8',
+    tenantId: '7b639e1c-dad4-4ff9-99d5-257ddef84fb3',
+    companyId: 'ef77638c-f01f-496a-bbe9-aef9115c76de',
+    name: 'item2',
+    description: 'second additional item',
+    sku: '1743852765',
+    quantity: 75,
+    minimumQuantity: 800,
+    isDeleted: false,
+    createdAt: '2025-05-15T11:32:43.214Z',
+    updatedAt: '2025-05-15T11:32:43.214Z',
+  },
+  {
+    id: '7736d375-c640-470e-9e05-f6b482d57de9',
+    tenantId: '7b639e1c-dad4-4ff9-99d5-257ddef84fb3',
+    companyId: 'ef77638c-f01f-496a-bbe9-aef9115c76de',
+    name: 'item3',
+    description: 'third additional item',
+    sku: '1743852766',
+    quantity: 100,
+    minimumQuantity: 1000,
+    isDeleted: false,
+    createdAt: '2025-05-20T11:32:43.214Z',
+    updatedAt: '2025-05-20T11:32:43.214Z',
+  },
+  {
+    id: '8736e375-d741-480e-af06-f7b582d68efa',
+    tenantId: '7b639e1c-dad4-4ff9-99d5-257ddef84fb3',
+    companyId: 'ef77638c-f01f-496a-bbe9-aef9115c76de',
+    name: 'item4',
+    description: 'fourth additional item',
+    sku: '1743852767',
+    quantity: 200,
+    minimumQuantity: 2000,
+    isDeleted: false,
+    createdAt: '2025-05-25T11:32:43.214Z',
+    updatedAt: '2025-05-25T11:32:43.214Z',
+  },
+  {
+    id: '9736f375-e842-490e-bf07-f8b682d79fgb',
+    tenantId: '7b639e1c-dad4-4ff9-99d5-257ddef84fb3',
+    companyId: 'ef77638c-f01f-496a-bbe9-aef9115c76de',
+    name: 'item5',
+    description: 'fifth additional item',
+    sku: '1743852768',
+    quantity: 300,
+    minimumQuantity: 3000,
+    isDeleted: false,
+    createdAt: '2025-05-30T11:32:43.214Z',
+    updatedAt: '2025-05-30T11:32:43.214Z',
   },
 ];
 
@@ -91,7 +148,7 @@ const searchQuery = ref('');
 const selectedStatus = ref<boolean | undefined>(undefined);
 
 onMounted(() => {
-  fetchWarehouses();
+  fetchStockItems();
 });
 
 const handleSearch = (query: string) => {
@@ -102,49 +159,43 @@ const handleFilter = (status: boolean | undefined) => {
   selectedStatus.value = status;
 };
 
-const fetchWarehouses = async () => {
+const fetchStockItems = async () => {
   await store.fetchAll();
-  warehouses.value = store.warehouses;
+  stockItems.value = store.getStockItems;
 };
 
-const filteredWarehouses = computed(() =>
-  warehouses.value.filter(
-    (warehouse) =>
-      warehouse.name.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
-      (selectedStatus.value === undefined ||
-        String(warehouse.isActive) === selectedStatus.value)
-  )
-);
-
 const showAddWarehouseModal = () => {
-  selectedWarehouse.value = undefined;
+  selectedStockItem.value = undefined;
   formMode.value = 'create';
   showForm.value = true;
 };
 
-const viewWarehouse = (warehouse: IWarehouse) => {
-  selectedWarehouse.value = warehouse;
+const viewWarehouse = (stockItem: IStockItem) => {
+  selectedStockItem.value = stockItem;
   showDetail.value = true;
 };
 
-const editWarehouse = (warehouse: IWarehouse) => {
-  selectedWarehouse.value = warehouse;
+const editWarehouse = (stockItem: IStockItem) => {
+  selectedStockItem.value = stockItem;
   formMode.value = 'edit';
   showForm.value = true;
 };
 
 const deleteWarehouse = async (id: string) => {
-  await store.delete(id);
-  fetchWarehouses(); // Refresh the list after deletion
+  // await store.delete(id);
+  alert('delete');
+  await fetchStockItems(); // Refresh the list after deletion
 };
 
-const handleFormSubmit = async (warehouse: IWarehouse) => {
+const handleFormSubmit = async (stockItem: IStockItem) => {
   if (formMode.value === 'create') {
-    await store.create(warehouse);
-  } else if (selectedWarehouse.value) {
-    await store.update(selectedWarehouse.value.id, warehouse);
+    alert('create');
+    // await store.create(stockItem);
+  } else if (selectedStockItem.value) {
+    alert('edit');
+    // await store.update(selectedWarehouse.value.id, stockItem);
   }
   showForm.value = false;
-  fetchWarehouses(); // Refresh the list after update
+  await fetchStockItems(); // Refresh the list after update
 };
 </script>

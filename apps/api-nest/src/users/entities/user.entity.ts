@@ -1,3 +1,4 @@
+import { type Roles, roles } from '@berry/shared';
 import {
   Column,
   CreateDateColumn,
@@ -7,9 +8,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { TenantEntity } from '../../tenants/entities/tenant.entity';
-import { Roles, roles } from '@berry/shared';
+
 import { CompanyEntity } from '../../company/entities/company.entity';
+import { TenantEntity } from '../../tenants/entities/tenant.entity';
 
 @Entity({ name: 'users', schema: 'public' })
 export class UserEntity {

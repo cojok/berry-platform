@@ -80,7 +80,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import { computed } from 'vue';
 import {
   createWarehouseSchema,
-  IWarehouse,
+  IStockItem,
   IWarehouseCreatePayload,
   IWarehouseUpdatePayload,
   updateWarehouseSchema,
@@ -90,7 +90,7 @@ import { useWarehouseStore } from '../../stores/warehouse.store';
 // Props and emits
 const props = defineProps<{
   mode: 'create' | 'edit';
-  warehouse?: Partial<IWarehouse>;
+  stockItem?: Partial<IStockItem>;
 }>();
 const emit = defineEmits<{
   (e: 'close'): void;
@@ -108,12 +108,12 @@ const validationSchema = computed(() => {
 
 // Set initial values based on provided warehouse data or defaults
 const initialValues = computed(() => {
-  if (props.mode === 'edit' && props.warehouse) {
+  if (props.mode === 'edit' && props.stockItem) {
     return {
-      name: props.warehouse.name,
-      location: props.warehouse.location,
-      capacity: props.warehouse.capacity,
-      isActive: props.warehouse.isActive ?? true, // default to true if undefined
+      name: props.stockItem.name,
+      location: props.stockItem.location,
+      capacity: props.stockItem.capacity,
+      isActive: props.stockItem.isActive ?? true, // default to true if undefined
     };
   }
 
@@ -132,9 +132,9 @@ const onSubmit = async (
   try {
     if (props.mode === 'create') {
       await warehouseStore.create(values as IWarehouseCreatePayload);
-    } else if (props.mode === 'edit' && props.warehouse?.id) {
+    } else if (props.mode === 'edit' && props.stockItem?.id) {
       await warehouseStore.update(
-        props.warehouse.id,
+        props.stockItem.id,
         values as IWarehouseUpdatePayload
       );
     }

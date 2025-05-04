@@ -1,8 +1,9 @@
+import { Roles } from '@berry/shared';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 import { instance } from '../services/axios.service';
-import { Roles } from '@berry/shared';
 
 // ✅ Strict TypeScript Interface for User
 interface User {
@@ -45,7 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
    * ✅ LOGIN: Authenticates the user and stores the access token.
    */
   const login = async (email: string, password: string): Promise<void> => {
-    console.info('[AuthStore] Attempting login...');
+    console.debug('[AuthStore] Attempting login...');
 
     if (!email || email.trim() === '' || !password || password.trim() === '') {
       console.warn('[AuthStore] Login failed - Missing email or password.');
@@ -66,14 +67,18 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     accessToken.value = response.data.accessToken.trim();
+    alert(accessToken.value);
     localStorage.setItem('accessToken', accessToken.value);
     user.value = response.data.user;
 
-    console.info('[AuthStore] Login successful. Fetching user...');
+    console.debug('[AuthStore] Login successful. Fetching user...');
     // await fetchUser();
 
-    console.info('[AuthStore] Redirecting to dashboard...');
-    await router.push('/users');
+    const redirectTo =
+      (router.currentRoute.value.query.redirectTo as string) ?? '/users';
+
+    console.debug('[AuthStore] Redirecting to dashboard...');
+    await router.push(redirectTo);
   };
 
   /**
@@ -93,7 +98,9 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('accessToken');
 
     console.info('[AuthStore] Redirecting to login...');
-    await router.push('/login');
+    const redirectTo = router.currentRoute;
+    alert(redirectTo);
+    await router.push(`/login?redirectTo=${redirectTo ?? '/users'}`);
   };
 
   /**
