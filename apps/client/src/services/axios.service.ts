@@ -11,6 +11,16 @@ export const instance: AxiosInstance = axios.create({
   },
 });
 
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('accessToken');
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
 const checkUnauthorized = (error: AxiosError, redirectUrl?: string): void => {
   if (error.response?.status === HTTP_STATUS_CODES.UNAUTHORIZED) {
     localStorage.removeItem('accessToken');

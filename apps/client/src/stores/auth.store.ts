@@ -37,10 +37,9 @@ export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref<string | null>(
     localStorage.getItem('accessToken') ?? null
   );
-  // const isAuthenticated = computed(
-  //   () => accessToken.value !== null && accessToken.value.trim() !== ''
-  // );
-  const isAuthenticated = computed(() => true);
+  const isAuthenticated = computed(
+    () => accessToken.value !== null && accessToken.value.trim() !== ''
+  );
 
   /**
    * ✅ LOGIN: Authenticates the user and stores the access token.
@@ -67,7 +66,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     accessToken.value = response.data.accessToken.trim();
-    alert(accessToken.value);
     localStorage.setItem('accessToken', accessToken.value);
     user.value = response.data.user;
 
@@ -96,10 +94,8 @@ export const useAuthStore = defineStore('auth', () => {
     accessToken.value = null;
     user.value = null;
     localStorage.removeItem('accessToken');
-
     console.info('[AuthStore] Redirecting to login...');
     const redirectTo = router.currentRoute;
-    alert(redirectTo);
     await router.push(`/login?redirectTo=${redirectTo ?? '/users'}`);
   };
 
