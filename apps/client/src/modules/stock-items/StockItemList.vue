@@ -60,7 +60,12 @@
           <!-- Actions -->
           <td class="px-4 py-3 flex space-x-2">
             <button
-              @click="$emit('edit', stockItem)"
+              @click="
+                () => {
+                  console.log('Edit button clicked:', stockItem);
+                  $emit('edit', stockItem);
+                }
+              "
               class="px-3 py-1.5 cursor-pointer text-offWhiteBerry text-xs font-medium rounded-md hover:bg-accentOrangeBerry transition focus:outline-none focus:ring-2 focus:ring-accentOrangeBerry"
             >
               Edit

@@ -89,6 +89,7 @@ import {
   createStockItemSchema,
   IStockItem,
   StockItemCreatePayload,
+  StockItemUpdatePayload,
   updateStockItemSchema,
 } from '@berry/shared';
 import { useStockItemStore } from '../../stores/stock-item.store';
@@ -129,22 +130,22 @@ const initialValues = computed(() => {
   };
 });
 
-// Form submit handler
-const onSubmit = async (values: StockItemCreatePayload) => {
+const onSubmit = async (
+  values: StockItemUpdatePayload | StockItemCreatePayload
+) => {
   try {
     if (props.mode === 'create') {
       await stockItemStore.create(values as StockItemCreatePayload);
-    } /*else if (props.mode === 'edit' && props.stockItem?.id) {
-      await stockItemStore.update(
-        props.stockItem.id,
-        values as IWarehouseUpdatePayload,
-      );
-    }*/
-
-    // Just close the modal after successful operation
-    emit('close');
+    } else if (props.mode === 'edit' && props.stockItem) {
+      // Make sure to include the ID from the original stock item
+      await stockItemStore.update({
+        ...values,
+        id: props.stockItem.id,
+      });
+    }
+    emit('close'); // Close the form after successful operation
   } catch (error) {
-    console.error('Failed to submit warehouse form:', error);
+    console.error('Failed to process stock item:', error);
   }
 };
 </script>

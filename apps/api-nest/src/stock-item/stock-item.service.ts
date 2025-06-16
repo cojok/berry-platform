@@ -75,7 +75,7 @@ export class StockItemService {
       throw new NotFoundException(`Stock item with ID "${id}" not found`);
     }
 
-    return stockItemResponseSchema.parse(stockItem);
+    return stockItemCreateResponseMapperSchema.parse(stockItem);
   }
 
   async update({
@@ -94,7 +94,7 @@ export class StockItemService {
       ...payload,
     });
 
-    return updatedStockItem as StockItemResponseDto;
+    return stockItemCreateResponseMapperSchema.parse(updatedStockItem);
   }
 
   async softDelete({

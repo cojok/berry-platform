@@ -2,7 +2,6 @@ import { ICompany } from './company.interfaces';
 import { ITenant } from './tenant.interfaces';
 import { IWarehouse } from './warehouse.interfaces';
 
-
 export interface IStockItem {
   id: string;
   tenantId: string;

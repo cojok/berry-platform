@@ -96,7 +96,9 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('accessToken');
     console.info('[AuthStore] Redirecting to login...');
     const redirectTo = router.currentRoute;
-    await router.push(`/login?redirectTo=${redirectTo ?? '/users'}`);
+    await router.push(
+      `/login?redirectTo=${redirectTo.value.fullPath ?? '/users'}`
+    );
   };
 
   /**

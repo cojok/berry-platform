@@ -38,11 +38,11 @@
     />
 
     <!-- Warehouse Detail Modal -->
-    <StockItemDetail
-      v-if="showDetail && selectedStockItem"
-      :stockItem="selectedStockItem"
-      @close="showDetail = false"
-    />
+    <!--    <StockItemDetail-->
+    <!--      v-if="showDetail && selectedStockItem"-->
+    <!--      :stockItem="selectedStockItem"-->
+    <!--      @close="showDetail = false"-->
+    <!--    />-->
   </div>
 </template>
 
@@ -52,7 +52,7 @@ import { PlusIcon } from '@heroicons/vue/24/solid';
 
 import StockItemList from '../modules/stock-items/StockItemList.vue';
 import StockItemForm from '../modules/stock-items/StockItemForm.vue';
-import StockItemDetail from '../modules/stock-items/StockItemDetail.vue';
+// import StockItemDetail from '../modules/stock-items/StockItemDetail.vue';
 import { IStockItem } from '@berry/shared';
 import StockItemFilters from '../modules/stock-items/StockItemFilters.vue';
 import { useStockItemStore } from '../stores/stock-item.store';
