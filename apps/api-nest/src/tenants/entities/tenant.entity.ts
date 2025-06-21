@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
 import { CompanyEntity } from '../../company/entities/company.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 

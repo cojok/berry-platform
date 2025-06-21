@@ -31,11 +31,11 @@ export class WarehouseEntity extends BaseTenantEntity implements IWarehouse {
   @JoinTable({
     name: 'stock_item_warehouse',
     joinColumn: {
-      name: 'warehouseId',
+      name: 'warehouse_id',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'stockItemId',
+      name: 'stockItem_id',
       referencedColumnName: 'id',
     },
   })

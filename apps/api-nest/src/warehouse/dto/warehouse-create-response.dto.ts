@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { warehouseCreateResponseSchema } from '@berry/shared';
+import { warehouseCreateResponseMapperSchema } from '@berry/shared';
 
 export type WarehouseCreateResponseDto = z.infer<
-  typeof warehouseCreateResponseSchema
+  typeof warehouseCreateResponseMapperSchema
 >;

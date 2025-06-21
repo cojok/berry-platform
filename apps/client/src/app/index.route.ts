@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { dashboardRoutes } from '../modules/dashboard/dasboard.route';
+
 import AppLayout from '../components/layouts/AppLayout.vue';
+import { dashboardRoutes } from '../modules/dashboard/dasboard.route';
 import {
   AuthRoutes,
   ProfileRoutes,
@@ -8,7 +9,6 @@ import {
   UsersRoutes,
   WarehouseRoutes,
 } from '../router';
-import { useAuthStore } from '../stores/auth.store';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,14 +34,16 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore();
+  const token = localStorage.getItem('accessToken');
 
-  if (to.meta.requiresAuth === true && !authStore.isAuthenticated) {
+  if (
+    to.meta.requiresAuth === true &&
+    (token === null || token === undefined || token.trim() === '')
+  ) {
     // Redirect unauthenticated users to login
     next('/login');
-  } else {
-    next();
   }
+  next();
 });
 
 export default router;

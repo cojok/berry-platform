@@ -17,7 +17,6 @@ export interface IWarehouseData {
 
 export type IWarehouse = IWarehouseData;
 
-// Client payload for creation (FE ➜ BE)
 export type IWarehouseCreatePayload = Partial<
   Omit<
     IWarehouseData,
@@ -25,7 +24,6 @@ export type IWarehouseCreatePayload = Partial<
   >
 >;
 
-// Response to client after creation
 export type IWarehouseCreateResponse = Pick<
   IWarehouseData,
   | 'id'

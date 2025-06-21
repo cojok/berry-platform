@@ -6,7 +6,7 @@
       class="bg-blackBerry/60 border border-neutralGrayBerry/40 p-6 rounded-xl shadow-lg w-96"
     >
       <h2 class="text-xl font-heading font-semibold text-offWhiteBerry/90 mb-4">
-        {{ mode === 'create' ? 'Create Warehouse' : 'Edit Warehouse' }}
+        {{ mode === 'create' ? 'Create Stock Item' : 'Edit Stock Item' }}
       </h2>
 
       <Form
@@ -20,38 +20,45 @@
         <Field
           name="name"
           class="w-full px-4 py-2 bg-neutralGrayBerry/50 text-offWhiteBerry rounded-lg focus:ring-2 focus:ring-accentOrangeBerry"
-          placeholder="Warehouse Name"
+          placeholder="Item Name"
         />
         <ErrorMessage name="name" class="text-red-500 text-sm" />
 
-        <!-- Location -->
+        <!-- Description -->
         <Field
-          name="location"
+          name="description"
+          as="textarea"
           class="w-full px-4 py-2 bg-neutralGrayBerry/50 text-offWhiteBerry rounded-lg focus:ring-2 focus:ring-accentOrangeBerry"
-          placeholder="Location (optional)"
+          placeholder="Description"
+          rows="3"
         />
-        <ErrorMessage name="location" class="text-red-500 text-sm" />
+        <ErrorMessage name="description" class="text-red-500 text-sm" />
 
-        <!-- Capacity -->
+        <!-- SKU -->
         <Field
-          name="capacity"
+          name="sku"
+          class="w-full px-4 py-2 bg-neutralGrayBerry/50 text-offWhiteBerry rounded-lg focus:ring-2 focus:ring-accentOrangeBerry"
+          placeholder="SKU"
+        />
+        <ErrorMessage name="sku" class="text-red-500 text-sm" />
+
+        <!-- Quantity -->
+        <Field
+          name="quantity"
           type="number"
           class="w-full px-4 py-2 bg-neutralGrayBerry/50 text-offWhiteBerry rounded-lg focus:ring-2 focus:ring-accentOrangeBerry"
-          placeholder="Capacity"
+          placeholder="Quantity"
         />
-        <ErrorMessage name="capacity" class="text-red-500 text-sm" />
+        <ErrorMessage name="quantity" class="text-red-500 text-sm" />
 
-        <!-- Status (isActive) -->
+        <!-- Minimum Quantity -->
         <Field
-          name="isActive"
-          as="select"
+          name="minimumQuantity"
+          type="number"
           class="w-full px-4 py-2 bg-neutralGrayBerry/50 text-offWhiteBerry rounded-lg focus:ring-2 focus:ring-accentOrangeBerry"
-        >
-          <option :value="null" disabled>Select Status</option>
-          <option :value="true">Active</option>
-          <option :value="false">Inactive</option>
-        </Field>
-        <ErrorMessage name="isActive" class="text-red-500 text-sm" />
+          placeholder="Minimum Quantity"
+        />
+        <ErrorMessage name="minimumQuantity" class="text-red-500 text-sm" />
 
         <div class="mt-4 flex justify-between">
           <button
@@ -79,70 +86,66 @@ import { ErrorMessage, Field, Form } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { computed } from 'vue';
 import {
-  createWarehouseSchema,
-  IWarehouse,
-  IWarehouseCreatePayload,
-  IWarehouseUpdatePayload,
-  updateWarehouseSchema,
+  createStockItemSchema,
+  IStockItem,
+  StockItemCreatePayload,
+  StockItemUpdatePayload,
+  updateStockItemSchema,
 } from '@berry/shared';
-import { useWarehouseStore } from '../../stores/warehouse.store';
+import { useStockItemStore } from '../../stores/stock-item.store';
 
 // Props and emits
 const props = defineProps<{
   mode: 'create' | 'edit';
-  warehouse?: Partial<IWarehouse>;
+  stockItem?: Partial<IStockItem>;
 }>();
 const emit = defineEmits<{
   (e: 'close'): void;
 }>();
 
-// Get warehouse store
-const warehouseStore = useWarehouseStore();
+const stockItemStore = useStockItemStore();
 
-// Create validation schema based on mode
 const validationSchema = computed(() => {
   return toTypedSchema(
-    props.mode === 'create' ? createWarehouseSchema : updateWarehouseSchema
+    props.mode === 'create' ? createStockItemSchema : updateStockItemSchema
   );
 });
 
-// Set initial values based on provided warehouse data or defaults
 const initialValues = computed(() => {
-  if (props.mode === 'edit' && props.warehouse) {
+  if (props.mode === 'edit' && props.stockItem) {
     return {
-      name: props.warehouse.name,
-      location: props.warehouse.location,
-      capacity: props.warehouse.capacity,
-      isActive: props.warehouse.isActive ?? true, // default to true if undefined
+      name: props.stockItem.name,
+      description: props.stockItem.description,
+      sku: props.stockItem.sku,
+      quantity: props.stockItem.quantity,
+      minimumQuantity: props.stockItem.minimumQuantity,
     };
   }
-
   return {
     name: '',
-    location: '',
-    capacity: undefined,
-    isActive: true, // default to active
+    description: '',
+    sku: '',
+    quantity: 0,
+    minimumQuantity: 0,
   };
 });
 
-// Form submit handler
 const onSubmit = async (
-  values: IWarehouseCreatePayload | IWarehouseUpdatePayload
+  values: StockItemUpdatePayload | StockItemCreatePayload
 ) => {
   try {
     if (props.mode === 'create') {
-      await warehouseStore.create(values as IWarehouseCreatePayload);
-    } else if (props.mode === 'edit' && props.warehouse?.id) {
-      await warehouseStore.update(
-        props.warehouse.id,
-        values as IWarehouseUpdatePayload
-      );
+      await stockItemStore.create(values as StockItemCreatePayload);
+    } else if (props.mode === 'edit' && props.stockItem) {
+      // Make sure to include the ID from the original stock item
+      await stockItemStore.update({
+        ...values,
+        id: props.stockItem.id,
+      });
     }
-
-    // Just close the modal after successful operation
-    emit('close');
+    emit('close'); // Close the form after successful operation
   } catch (error) {
-    console.error('Failed to submit warehouse form:', error);
+    console.error('Failed to process stock item:', error);
   }
 };
 </script>

@@ -1,8 +1,9 @@
+import { Roles } from '@berry/shared';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import instance from '../services/axios.service';
-import { Roles } from '@berry/shared';
+
+import { instance } from '../services/axios.service';
 
 // ✅ Strict TypeScript Interface for User
 interface User {
@@ -36,16 +37,15 @@ export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref<string | null>(
     localStorage.getItem('accessToken') ?? null
   );
-  // const isAuthenticated = computed(
-  //   () => accessToken.value !== null && accessToken.value.trim() !== ''
-  // );
-  const isAuthenticated = computed(() => true);
+  const isAuthenticated = computed(
+    () => accessToken.value !== null && accessToken.value.trim() !== ''
+  );
 
   /**
    * ✅ LOGIN: Authenticates the user and stores the access token.
    */
   const login = async (email: string, password: string): Promise<void> => {
-    console.info('[AuthStore] Attempting login...');
+    console.debug('[AuthStore] Attempting login...');
 
     if (!email || email.trim() === '' || !password || password.trim() === '') {
       console.warn('[AuthStore] Login failed - Missing email or password.');
@@ -69,11 +69,14 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('accessToken', accessToken.value);
     user.value = response.data.user;
 
-    console.info('[AuthStore] Login successful. Fetching user...');
+    console.debug('[AuthStore] Login successful. Fetching user...');
     // await fetchUser();
 
-    console.info('[AuthStore] Redirecting to dashboard...');
-    await router.push('/users');
+    const redirectTo =
+      (router.currentRoute.value.query.redirectTo as string) ?? '/users';
+
+    console.debug('[AuthStore] Redirecting to dashboard...');
+    await router.push(redirectTo);
   };
 
   /**
@@ -91,9 +94,11 @@ export const useAuthStore = defineStore('auth', () => {
     accessToken.value = null;
     user.value = null;
     localStorage.removeItem('accessToken');
-
     console.info('[AuthStore] Redirecting to login...');
-    await router.push('/login');
+    const redirectTo = router.currentRoute;
+    await router.push(
+      `/login?redirectTo=${redirectTo.value.fullPath ?? '/users'}`
+    );
   };
 
   /**
@@ -126,6 +131,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     if (!user.value || !user.value.id || user.value.id.trim() === '') {
       console.warn('[AuthStore] Cannot refresh token - User ID is missing.');
+      await logout();
       return;
     }
 

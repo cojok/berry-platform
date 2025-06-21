@@ -115,9 +115,10 @@ export class UsersService {
 
   public async addCompanyIdToUser(
     userId: string,
+    tenantId: string,
     companyId: string
   ): Promise<void> {
-    await this.userRepository.update(userId, { companyId });
+    await this.userRepository.update([userId, tenantId], { companyId });
   }
 
   /*async update(

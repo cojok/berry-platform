@@ -45,7 +45,7 @@ export class WarehouseService {
     });
 
     const savedWarehouse = await this.warehouseRepository.save(warehouse);
-    return warehouseCreateResponseSchema.parse(savedWarehouse);
+    return warehouseCreateResponseMapperSchema.parse(savedWarehouse);
   }
 
   async findAll(tenantId: string): Promise<WarehouseCreateResponseDto[]> {

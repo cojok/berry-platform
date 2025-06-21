@@ -10,7 +10,6 @@
     <UserFilters @search="handleSearch" @filter="handleFilter" />
 
     <!-- Users Table -->
-    <pre>{{ filteredUsers }}</pre>
     <UsersTable :users="filteredUsers" @edit="editUser" @delete="deleteUser" />
 
     <!-- Add User Button -->

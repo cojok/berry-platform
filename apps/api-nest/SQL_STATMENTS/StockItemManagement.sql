@@ -22,7 +22,7 @@ CREATE TABLE public.stock_items
     ON UPDATE CASCADE,
 
   -- Foreign key constraint to company table
-  CONSTRAINT fk_stockitem_company FOREIGN KEY (company_id) REFERENCES public.companies (id)
+  CONSTRAINT fk_stockitem_company FOREIGN KEY (company_id) REFERENCES public.company (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -43,7 +43,7 @@ CREATE TABLE public.stock_item_warehouse
   CONSTRAINT fk_stock_item_warehouse_stockitem FOREIGN KEY (stock_item_id)
     REFERENCES public.stock_items (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT fk_stock_item_warehouse_warehouse FOREIGN KEY (warehouse_id)
-    REFERENCES public.warehouses (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    REFERENCES public.warehouse (id) ON DELETE CASCADE ON UPDATE CASCADE,
 
   PRIMARY KEY (stock_item_id, warehouse_id) -- Composite primary key
 );

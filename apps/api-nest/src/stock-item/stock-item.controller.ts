@@ -1,3 +1,4 @@
+import { createStockItemSchema, updateStockItemSchema } from '@berry/shared';
 import {
   Body,
   Controller,
@@ -9,18 +10,18 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { StockItemService } from './stock-item.service';
-import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
 import {
   CreateStockItemDto,
-  createStockItemSchema,
+  StockItemCreateResponseDto,
   StockItemResponseDto,
   UpdateStockItemDto,
-  updateStockItemSchema,
 } from './dto';
-import { CurrentUserDecorator } from '../common/decorators/current-user.decorator';
+import { StockItemService } from './stock-item.service';
 import { TokenPayloadDto } from '../auth/dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUserDecorator } from '../common/decorators/current-user.decorator';
+import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 
 @Controller('stock-items')
 @UseGuards(JwtAuthGuard)
@@ -32,8 +33,9 @@ export class StockItemController {
     @Body(new ZodValidationPipe(createStockItemSchema))
     payload: CreateStockItemDto,
     @CurrentUserDecorator() currentUser: TokenPayloadDto
-  ): Promise<StockItemResponseDto> {
-    return await this.stockItemService.create(payload, currentUser.tenantId);
+  ): Promise<StockItemCreateResponseDto> {
+    const createData = { ...payload, tenantId: currentUser.tenantId };
+    return this.stockItemService.create(createData);
   }
 
   @Get()

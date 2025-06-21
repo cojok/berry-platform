@@ -31,14 +31,14 @@
         </span>
         <span v-if="isAuthenticated">
           <router-link
-            to="/stock"
+            :to="{ name: 'StockItems' }"
             class="hover:text-accentOrangeBerry transition"
             >Stock</router-link
           >
         </span>
         <span v-if="isAuthenticated">
           <router-link
-            to="/warehouse"
+            :to="{ name: 'Warehouses' }"
             class="hover:text-accentOrangeBerry transition"
             >Warehouse</router-link
           >

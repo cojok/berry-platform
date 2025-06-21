@@ -11,3 +11,6 @@ CREATE TABLE public.users (
                             updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                             CONSTRAINT fk_tenant FOREIGN KEY (tenant_id) REFERENCES public.tenants(id) ON DELETE CASCADE
 );
+
+ALTER TABLE public.users
+  ADD CONSTRAINT unique_auth0_user_id UNIQUE (auth0_user_id);
